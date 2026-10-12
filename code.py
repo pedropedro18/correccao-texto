@@ -181,7 +181,7 @@ def mostrar_correcao(st, original, aluno, idioma="pt", maiusculas=False,
 # ---------------------------------------------------------------------------
 # Interface da app (só corre quando este arquivo é o principal no Streamlit)
 # ---------------------------------------------------------------------------
-if _name_ == "_main_":
+if __name__ == "__main__":
     import streamlit as st
 
     st.set_page_config(page_title="Correção de ditado", page_icon="✍️")
