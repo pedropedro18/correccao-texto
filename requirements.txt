@@ -1,3 +1,2 @@
-streamt
-gTT
+streamtit
 google-genai
