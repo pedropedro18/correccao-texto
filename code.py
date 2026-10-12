@@ -182,10 +182,12 @@ def mostrar_correcao(st, original, aluno, idioma="pt", maiusculas=False,
 # Interface da app (só corre quando este arquivo é o principal no Streamlit)
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
+    from urllib.parse import quote
+
     import streamlit as st
 
-    PRECO = "500 Kz"            # mude para o seu preço
-    WHATSAPP = "244900000000"   # seu número, com código do país, sem +
+    PRECO = "3000 Kz"           # preço da correção
+    WHATSAPP = "244923030010"   # seu número, com código do país, sem +
 
     st.set_page_config(page_title="Correção de ditado", page_icon="✍️")
     st.title("✍️ Correção de ditado")
@@ -204,9 +206,9 @@ if __name__ == "__main__":
 
     if not st.session_state.liberado:
         st.info(f"Para ver a correção, pague {PRECO} e peça a chave de confirmação.")
-        link = (f"https://wa.me/{WHATSAPP}?text="
-                "Olá! Quero a chave para corrigir o ditado. Segue o comprovativo.")
-        st.markdown(f"[📲 Enviar comprovativo por WhatsApp]({link})")
+        msg = quote("Olá! Quero a chave para corrigir o ditado. Segue o comprovativo.")
+        st.link_button("📲 Enviar comprovativo por WhatsApp",
+                       f"https://wa.me/{WHATSAPP}?text={msg}")
         chave = st.text_input("Chave de confirmação", type="password")
         if st.button("Validar chave"):
             try:
