@@ -1,2 +1,3 @@
-streamtit
-google-genai
+streamtitgit
+gTTS
+speechRecognition
