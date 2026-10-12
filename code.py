@@ -3,7 +3,7 @@
 Compara o texto original com o do aluno palavra a palavra e mostra:
 certas (verde), erradas (vermelho riscado + certa), em falta (laranja),
 a mais (vermelho), erros de acento e de maiúscula, com nota de 0 a 20.
-Usa só a biblioteca padrão, por isso não altera o requirements.txt.
+Usa só a biblioteca padrão (mais o streamlit para a interface).
 """
 import difflib
 import html
@@ -176,3 +176,29 @@ def mostrar_correcao(st, original, aluno, idioma="pt", maiusculas=False,
     else:
         st.success(tx["perfeito"])
     return r
+
+
+# ---------------------------------------------------------------------------
+# Interface da app (só corre quando este arquivo é o principal no Streamlit)
+# ---------------------------------------------------------------------------
+if _name_ == "_main_":
+    import streamlit as st
+
+    st.set_page_config(page_title="Correção de ditado", page_icon="✍️")
+    st.title("✍️ Correção de ditado")
+
+    idioma = st.selectbox("Idioma", ["Português", "Français", "English"])
+    original = st.text_area("Texto original (do professor)", height=150)
+    aluno = st.text_area("Texto escrito pelo aluno", height=150)
+
+    col1, col2, col3 = st.columns(3)
+    maiusculas = col1.checkbox("Maiúsculas contam")
+    pontuacao = col2.checkbox("Avaliar pontuação")
+    acentos = col3.checkbox("Acentos contam", value=True)
+
+    if st.button("Corrigir", type="primary"):
+        if not original.strip():
+            st.warning("Escreva primeiro o texto original.")
+        else:
+            mostrar_correcao(st, original, aluno, idioma,
+                             maiusculas, pontuacao, acentos)
