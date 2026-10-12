@@ -184,8 +184,14 @@ def mostrar_correcao(st, original, aluno, idioma="pt", maiusculas=False,
 if __name__ == "__main__":
     import streamlit as st
 
+    PRECO = "500 Kz"            # mude para o seu preço
+    WHATSAPP = "244900000000"   # seu número, com código do país, sem +
+
     st.set_page_config(page_title="Correção de ditado", page_icon="✍️")
     st.title("✍️ Correção de ditado")
+
+    if "liberado" not in st.session_state:
+        st.session_state.liberado = False
 
     idioma = st.selectbox("Idioma", ["Português", "Français", "English"])
     original = st.text_area("Texto original (do professor)", height=150)
@@ -196,8 +202,27 @@ if __name__ == "__main__":
     pontuacao = col2.checkbox("Avaliar pontuação")
     acentos = col3.checkbox("Acentos contam", value=True)
 
+    if not st.session_state.liberado:
+        st.info(f"Para ver a correção, pague {PRECO} e peça a chave de confirmação.")
+        link = (f"https://wa.me/{WHATSAPP}?text="
+                "Olá! Quero a chave para corrigir o ditado. Segue o comprovativo.")
+        st.markdown(f"[📲 Enviar comprovativo por WhatsApp]({link})")
+        chave = st.text_input("Chave de confirmação", type="password")
+        if st.button("Validar chave"):
+            try:
+                validas = [str(c).strip() for c in st.secrets["CHAVES"]]
+            except Exception:
+                validas = []
+            if chave.strip() and chave.strip() in validas:
+                st.session_state.liberado = True
+                st.rerun()
+            else:
+                st.error("Chave inválida.")
+
     if st.button("Corrigir", type="primary"):
-        if not original.strip():
+        if not st.session_state.liberado:
+            st.warning("Pague e introduza a chave de confirmação primeiro.")
+        elif not original.strip():
             st.warning("Escreva primeiro o texto original.")
         else:
             mostrar_correcao(st, original, aluno, idioma,
